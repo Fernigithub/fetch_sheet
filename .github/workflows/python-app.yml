@@ -30,7 +30,7 @@ jobs:
     - name: Fetch Spreadsheet Data
       env:
         GOOGLE_SHEETS_CREDS: ${{ secrets.GOOGLE_SHEETS_CREDS }} # Replace with your secret name
-        # MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }} # Use the name of your secret
+        MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }} # Use the name of your secret
 
       run: |
         python fetch_spreadsheet.py # Replace with your Python script
@@ -40,5 +40,5 @@ jobs:
         git config --global user.email 'fernandotentor@gmail.com'
         git add . # Add changes to commit (including the new .csv file)
         git commit -m "Update CSV data" -a # Commit with a message
-        # git push --set-upstream https://${{ env.MY_GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }} # Push with PAT
-        git push # Push the commit to the repository
+        git push --set-upstream https://${{ env.MY_GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }} # Push with PAT
+        # git push # Push the commit to the repository
