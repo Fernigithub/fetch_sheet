@@ -1,13 +1,13 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+# This workflow will install Python dependencies, run script to fetch data
 
-name: Python application
+name: Fetch Spreadsheet Data
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  workflow_dispatch:
+
+  schedule:
+    # Runs every day at a specified UTC time, e.g., 1:00 AM
+    - cron: '0 1 * * *'
 
 permissions:
   contents: read
@@ -26,14 +26,19 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install flake8 pytest
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
+    - name: Fetch Spreadsheet Data
+      env:
+        GOOGLE_SHEETS_CREDS: ${{ secrets.GOOGLE_SHEETS_CREDS }} # Replace with your secret name
+        # MY_GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }} # Use the name of your secret
+
       run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
+        python fetch_spreadsheet.py # Replace with your Python script
+    - name: Commit and Push CSV
       run: |
-        pytest
+        git config --global user.name 'Fernigithub'
+        git config --global user.email 'fernandotentor@gmail.com'
+        git add . # Add changes to commit (including the new .csv file)
+        git commit -m "Update CSV data" -a # Commit with a message
+        # git push --set-upstream https://${{ env.MY_GITHUB_TOKEN }}@github.com/${{ github.repository }} HEAD:${{ github.ref }} # Push with PAT
+        git push # Push the commit to the repository
