@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
   schedule:
-    # Runs every day at a specified UTC time, e.g., 1:00 AM
+    # Runs every week at a specified UTC time, e.g., 1:00 AM
     - cron: '0 1 * * 1'
 
 permissions:
